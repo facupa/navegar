@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barra de navegación</title>
+    <style>
+        /* Estilos mínimos y accesibles */
+        :focus {
+            outline: 3px solid #036;
+            outline-offset: 2px;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        .skip-link:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: 0.5rem;
+            background: #fff;
+            border: 2px solid #036;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            display: inline-block;
+            padding: 0.5rem 0.75rem;
+            text-decoration: none;
+            color: #036;
+            background: #e6f0ff;
+            border-radius: 4px;
+        }
+
+        main {
+            padding: 1rem 0;
+        }
+
+        section {
+            padding: 2rem 0;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Enlace para saltar directamente al contenido (útil para lectores de pantalla y teclado) -->
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+
+    <!-- Barra de navegación principal -->
+    <header>
+        <nav aria-label="Barra de navegación principal">
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal con id para el enlace "Saltar al contenido" -->
+    <main id="main" tabindex="-1">
+        <section id="inicio" aria-labelledby="h-inicio">
+            <h2 id="h-inicio">Inicio</h2>
+            <p>Bienvenido. Esta es la sección de inicio.</p>
+        </section>
+
+        <section id="sobre" aria-labelledby="h-sobre">
+            <h2 id="h-sobre">Sobre</h2>
+            <p>Información sobre el sitio o persona.</p>
+        </section>
+
+        <section id="servicios" aria-labelledby="h-servicios">
+            <h2 id="h-servicios">Servicios</h2>
+            <p>Descripción breve de los servicios ofrecidos.</p>
+        </section>
+
+        <section id="contacto" aria-labelledby="h-contacto">
+            <h2 id="h-contacto">Contacto</h2>
+            <p>Formulario o información de contacto.</p>
+        </section>
+    </main>
+<footer> © 2025 Facundo Peña. Todos los derechos reservados.</footer>
+</body>
+</html>
