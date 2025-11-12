@@ -1,3 +1,126 @@
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+            BARRA DE NAVEGACIÓN ACCESIBLE CON TEMA CLARO/OSCURO
+════════════        ═══════════════════════════════════════════════════════════════════
+
+    DESCRIPCIÓN:
+    ------------
+    Página HTML que implementa una barra de navegación completamente accesible
+    con soporte para tema claro/oscuro. Incluye características de accesibilidad
+    web (WCAG 2.1) como navegación por teclado, anuncios ARIA y enlaces de
+    salto de contenido.
+
+    CARACTERÍSTICAS PRINCIPALES:
+    ----------------------------
+    • Navegación principal con enlaces a secciones
+    • Alternador de tema claro/oscuro con persistencia en localStorage
+    • Enlace "Saltar al contenido" para navegación por teclado
+    • Estilos con variables CSS para fácil personalización de temas
+    • Anuncios en vivo para lectores de pantalla
+    • Detección automática de preferencia de tema del sistema
+    • Indicadores visuales de foco para navegación por teclado
+
+    ESTRUCTURA HTML:
+    ----------------
+    <header>           - Contiene navegación y botón de tema
+        <nav>            - Barra de navegación con enlaces a secciones
+        <button>         - Botón para alternar tema
+    
+    <main>             - Contenido principal con id="main"
+        <section>        - Secciones: Inicio, Sobre, Servicios, Contacto
+    
+    <footer>           - Pie de página con derechos de autor
+    
+    <div#theme-announcer> - Elemento oculto para anuncios ARIA
+
+    ACCESIBILIDAD (ARIA):
+    --------------------
+    • aria-label: Etiquetas descriptivas para navegación y botón de tema
+    • aria-pressed: Estado del botón de tema (true/false)
+    • aria-live="polite": Anuncios de cambios de tema
+    • aria-labelledby: Asocia encabezados con secciones
+    • tabindex="-1": Permite enfocar main programáticamente
+    • .skip-link: Enlace de salto para ir directo al contenido
+    • .sr-only: Clase para contenido solo visible a lectores de pantalla
+
+    TEMAS (CSS CUSTOM PROPERTIES):
+    -----------------------------
+    Tema Claro (:root):
+        --bg: #ffffff           - Fondo blanco
+        --text: #01203a         - Texto azul oscuro
+        --muted: #ddd           - Bordes y texto secundario gris claro
+        --link-bg: #e6f0ff      - Fondo de enlaces azul muy claro
+        --link-color: #036      - Color de enlaces azul
+        --toggle-bg: #e6f0ff    - Fondo del botón azul claro
+        --toggle-color: #036    - Texto del botón azul
+
+    Tema Oscuro ([data-theme="dark"]):
+        --bg: #071019           - Fondo azul muy oscuro
+        --text: #e6f7ff         - Texto azul muy claro
+        --muted: #22303a        - Bordes y texto secundario azul oscuro
+        --link-bg: #08345a      - Fondo de enlaces azul oscuro
+        --link-color: #cfe8ff   - Color de enlaces azul claro
+        --toggle-bg: #08345a    - Fondo del botón azul oscuro
+        --toggle-color: #cfe8ff - Texto del botón azul claro
+
+    JAVASCRIPT - FUNCIONALIDAD DEL TEMA:
+    -----------------------------------
+    Funciones principales:
+    
+    • applyTheme(theme)
+        - Aplica el tema especificado ('light' o 'dark')
+        - Actualiza atributo data-theme en <html>
+        - Cambia aria-pressed del botón
+        - Actualiza texto visible y aria-label del botón
+        - Anuncia el cambio a lectores de pantalla
+    
+    Inicialización:
+    - Lee preferencia guardada en localStorage (clave: 'site-theme')
+    - Si no hay preferencia, usa prefers-color-scheme del sistema
+    - Aplica tema inicial al cargar la página
+    
+    Event Listeners:
+    - Click en botón: alterna tema y guarda en localStorage
+    - MediaQuery change: actualiza si cambia preferencia del sistema
+        (solo si el usuario no ha establecido una preferencia manual)
+
+    ESTILOS DESTACADOS:
+    ------------------
+    • :focus - Indicador de foco visible (borde azul 3px)
+    • .skip-link - Enlace oculto que aparece al recibir foco
+    • nav ul - Flexbox horizontal con espaciado
+    • #theme-toggle - Botón accesible con estados visuales claros
+    • .sr-only - Utility class para ocultar visualmente pero mantener accesible
+
+    NAVEGACIÓN POR TECLADO:
+    ----------------------
+    • Tab: Navega entre enlaces y botón
+    • Enter/Space: Activa enlaces y botón de tema
+    • Enlace de salto se muestra al recibir foco con Tab
+    • Indicadores visuales claros en todos los elementos enfocados
+
+    COMPATIBILIDAD:
+    --------------
+    • Navegadores modernos con soporte para:
+        - CSS Custom Properties (variables CSS)
+        - localStorage
+        - matchMedia API
+        - Flexbox
+    • Funciona sin JavaScript (tema por defecto)
+    • Compatible con lectores de pantalla (NVDA, JAWS, VoiceOver)
+
+    ALMACENAMIENTO:
+    --------------
+    localStorage:
+        - Clave: 'site-theme'
+        - Valores: 'light' | 'dark'
+        - Persiste preferencia del usuario entre sesiones
+
+    AUTOR: Facundo Peña
+    AÑO: 2025
+    LICENCIA: Todos los derechos reservados
+═══════════════════════════════════════════════════════════════════════════════
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,15 +158,31 @@
             padding: 0;
             display: flex;
             gap: 0.5rem;
+            align-items: center;
         }
 
         nav a {
             display: inline-block;
             padding: 0.5rem 0.75rem;
             text-decoration: none;
-            color: #036;
-            background: #e6f0ff;
+            color: var(--link-color);
+            background: var(--link-bg);
             border-radius: 4px;
+        }
+
+        /* Toggle button visible and accessible */
+        #theme-toggle {
+            margin-left: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background: var(--toggle-bg);
+            color: var(--toggle-color);
+            cursor: pointer;
+            font: inherit;
+        }
+        #theme-toggle:focus {
+            border-color: #036;
         }
 
         main {
@@ -52,7 +191,55 @@
 
         section {
             padding: 2rem 0;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid var(--muted);
+        }
+
+        footer {
+            padding: 1rem 0;
+            color: var(--muted);
+            border-top: 1px solid var(--muted);
+        }
+
+        /* Visually hidden utility for announcements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Theme variables: default (light) */
+        :root {
+            --bg: #ffffff;
+            --text: #01203a;
+            --muted: #ddd;
+            --link-bg: #e6f0ff;
+            --link-color: #036;
+            --toggle-bg: #e6f0ff;
+            --toggle-color: #036;
+        }
+
+        /* Dark theme when data-theme="dark" on <html> */
+        :root[data-theme="dark"] {
+            --bg: #071019;
+            --text: #e6f7ff;
+            --muted: #22303a;
+            --link-bg: #08345a;
+            --link-color: #cfe8ff;
+            --toggle-bg: #08345a;
+            --toggle-color: #cfe8ff;
+        }
+
+        html, body {
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
         }
     </style>
 </head>
@@ -62,13 +249,21 @@
 
     <!-- Barra de navegación principal -->
     <header>
-        <nav aria-label="Barra de navegación principal">
+        <!-- Botón para cambiar tema; aria-pressed indica estado -->
+                
+                    <button id="theme-toggle"
+                            aria-pressed="false"
+                            aria-label="Activar tema oscuro">
+                        Tema claro
+                    </button>
+                
+            <nav aria-label="Barra de navegación principal">
             <ul>
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#sobre">Sobre</a></li>
                 <li><a href="#servicios">Servicios</a></li>
                 <li><a href="#contacto">Contacto</a></li>
-            </ul>
+                <ul>
         </nav>
     </header>
 
@@ -94,6 +289,52 @@
             <p>Formulario o información de contacto.</p>
         </section>
     </main>
-<footer> © 2025 Facundo Peña. Todos los derechos reservados.</footer>
+
+    <footer> © 2025 Facundo Peña. Todos los derechos reservados.</footer>
+
+    <!-- Elemento para anunciar cambios de tema a lectores de pantalla -->
+    <div id="theme-announcer" class="sr-only" aria-live="polite"></div>
+
+    <script>
+        (function () {
+            const toggle = document.getElementById('theme-toggle');
+            const announcer = document.getElementById('theme-announcer');
+            const root = document.documentElement;
+            const storageKey = 'site-theme';
+
+            function applyTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                const isDark = theme === 'dark';
+                toggle.setAttribute('aria-pressed', String(isDark));
+                // Visible label for sighted users
+                toggle.textContent = isDark ? 'Tema oscuro' : 'Tema claro';
+                // Accessible label to indicate action
+                toggle.setAttribute('aria-label', isDark ? 'Activar tema claro' : 'Activar tema oscuro');
+                // Announce change to assistive tech
+                announcer.textContent = isDark ? 'Tema cambiado a oscuro' : 'Tema cambiado a claro';
+            }
+
+            // Initialize theme from localStorage or prefers-color-scheme
+            const saved = localStorage.getItem(storageKey);
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initial = saved || (prefersDark ? 'dark' : 'light');
+            applyTheme(initial);
+
+            // Toggle handler
+            toggle.addEventListener('click', function () {
+                const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+                localStorage.setItem(storageKey, next);
+            });
+
+            // Optional: update if system preference changes and user hasn't set a preference
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (!localStorage.getItem(storageKey)) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
